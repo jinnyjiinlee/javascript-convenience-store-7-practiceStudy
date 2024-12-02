@@ -1,6 +1,6 @@
 import { ERROR_MESSAGES } from '../Constant/errorMessages.js';
 
-export class Lotto {
+export class productDetailsValidationLotto {
   #numbers;
 
   constructor(numbers) {
