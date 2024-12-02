@@ -21,6 +21,23 @@ export class InputHandler {
       }
     }
   }
+
+  async getFreePromotionInput(parsedProductDetails) {
+    let isValid = false;
+    while (!isValid) {
+      const input = await Console.readLineAsync(
+        `\n현재 ${parsedProductDetails[0]}은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)\n`,
+      );
+
+      try {
+        // isValid = new productDetailsValidation(input);
+        return parsedProductDetails;
+      } catch (e) {
+        Console.print(e.message);
+      }
+    }
+  }
+
   // async getPurchaseAmountInput() {
   //   const inputMessage = INPUT_MESSAGES.PURCHASE_AMOUNT;
   //   return this.validate(PurchasePrice, inputMessage);
