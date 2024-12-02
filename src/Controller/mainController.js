@@ -8,6 +8,6 @@ export class MainController {
   }
 
   async startProgram() {
-    this.output.printWelcomeGreeting();
+    this.output.printProductDetails();
   }
 }
