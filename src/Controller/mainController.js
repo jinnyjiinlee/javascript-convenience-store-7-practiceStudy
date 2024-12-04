@@ -2,24 +2,21 @@ import { InputHandler } from '../View/inputView.js';
 import { OutputHandler } from '../View/outputView.js';
 
 import { FreePromotionChecker } from '../Model/freePromotionChecker.js';
+import { FixedPricePaymentChecker } from '../Model/fixedPricePaymentChecker.js';
+import { PRODUCT_DETAILS } from '../Constant/constant.js';
 
 export class MainController {
+  // TODO: 리펙토링 -> ctrl + shift + R: 리펙토링 으로 하기
   constructor() {
     this.input = new InputHandler();
     this.output = new OutputHandler();
+    this.PRODUCT_DETAILS = Object.freeze(this.PRODUCT_DETAILS);
   }
 
   async startProgram() {
     this.output.printProductDetails();
     const parsedProductDetails = await this.input.getProductDetailsInput();
     // console.log('parsedProductDetails: ', parsedProductDetails);
-
-    // const parsedProductDetails = [
-    //   ['사이다', '2'],
-    //   ['감자칩', '1'],
-    //   ['물', '1'],
-    //   ['초코바', '3'],
-    // ];
 
     this.parsedProductDetailsAddedPromotion = new FreePromotionChecker(parsedProductDetails);
 
@@ -30,9 +27,16 @@ export class MainController {
       }
     }
 
-    //
+    this.parsedProductDetailsAddedFixedPricePayment = new FixedPricePaymentChecker(
+      parsedProductDetails,
+    );
 
-    // 이제 해야할 것
-    // 프로모션 적용이 가능한 상품에 대해 해당 수량 만큼 가져오지 않았을 경우,
+    // 정가 구매 여부를 물어야 할 때,
+    for (let parsedProductDetails of this.parsedProductDetailsAddedFixedPricePayment) {
+      if (parsedProductDetails[4] !== null) {
+        this.input = await new InputHandler().getFixedPricePaymentInput(parsedProductDetails);
+      }
+    }
+
   }
 }

@@ -1,10 +1,5 @@
 import { PRODUCT_DETAILS } from '../Constant/constant.js';
 
-// const parsedProductDetails = [
-//   ['사이다', '2'],
-//   ['감자칩', '1'],
-// ];
-
 export class FreePromotionChecker {
   constructor(parsedProductDetails) {
     this.parsedProductDetails = parsedProductDetails;
@@ -34,6 +29,13 @@ export class FreePromotionChecker {
 
   checkFreePromotion() {
     // 프로모션 적용 상품인지 확인한다.
+
+    this.checkOnePlusOne();
+    this.checkTwoPlusOne();
+    this.checkNotPromotion();
+  }
+
+  checkOnePlusOne() {
     // 1+1인지 확인하고 배열에 해당 프로모션을 넣어준다.
     for (let parsedProduct of this.parsedProductDetails) {
       const checkOnePlusOneProduct = this.onePlusOneProductNames.some(
@@ -44,7 +46,9 @@ export class FreePromotionChecker {
         parsedProduct.push('1+1');
       }
     }
+  }
 
+  checkTwoPlusOne() {
     // 2+1인지 확인하고 배열에 넣어준다.
     for (let parsedProduct of this.parsedProductDetails) {
       const checkTwoPlusOneProduct = this.twoPlusOneProductNames.some(
@@ -55,7 +59,9 @@ export class FreePromotionChecker {
         parsedProduct.push('2+1');
       }
     }
+  }
 
+  checkNotPromotion() {
     for (let parsedProduct of this.parsedProductDetails) {
       if (parsedProduct[2] === undefined) {
         parsedProduct.push(null);
@@ -86,7 +92,7 @@ export class FreePromotionChecker {
       }
       // 2+1
       if (parsedProduct[2] === '2+1') {
-        // 지금 구매한 상품 중 2+1 상품 키 들고오기
+        // 사려고 하는 상품 중 2+1 상품 키 들고오기
         const twoPlusOneKey = Object.keys(PRODUCT_DETAILS).find(
           (key) => PRODUCT_DETAILS[key].PRODUCT_NAME === parsedProduct[0],
         );
@@ -94,8 +100,8 @@ export class FreePromotionChecker {
         const promotionStock = PRODUCT_DETAILS[twoPlusOneKey].PROMOTION_STOCK;
         const inputQuantity = Number(parsedProduct[1]);
 
-        // 사려는 수량이 2의의 배수이고 // 재고가 많으면
-        if (inputQuantity % 2 === 0 && promotionStock > inputQuantity) {
+        // 사려는 수량이 2의의 배수이고 // 3으로 나누었을 때 나머지가 1일 때 // 재고가 많으면
+        if (inputQuantity % 3 === 1 && promotionStock > inputQuantity) {
           const availableFreePromotion = 1;
           parsedProduct.push(availableFreePromotion);
         }

@@ -1,4 +1,5 @@
-// TODO: 나중에 파일에서 불러온 것으로 넣기
+// TODO: 나중에 파일에서 불러온 것으로 넣기 깊은 복사, 얕은 복사
+
 export const PRODUCT_DETAILS = {
   1: {
     PRODUCT_NAME: '콜라',

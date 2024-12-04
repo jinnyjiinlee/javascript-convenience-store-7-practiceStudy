@@ -38,42 +38,19 @@ export class InputHandler {
     }
   }
 
-  // async getPurchaseAmountInput() {
-  //   const inputMessage = INPUT_MESSAGES.PURCHASE_AMOUNT;
-  //   return this.validate(PurchasePrice, inputMessage);
-  // }
+  async getFixedPricePaymentInput(parsedProductDetails) {
+    let isValid = false;
+    while (!isValid) {
+      const input = await Console.readLineAsync(
+        `현재 ${parsedProductDetails[0]} ${parsedProductDetails[4]}개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까?`,
+      );
 
-  // async getWinningNumbersInput() {
-  //   const inputMessage = INPUT_MESSAGES.WINNING_NUMBERS;
-  //   this.winningNumbers = await this.validate(Lotto, inputMessage);
-  //   this.winningNumbersToArray = this.winningNumbers.split(',').map(Number);
-
-  //   return this.winningNumbers;
-  // }
-
-  // async getBonusNumberInput() {
-  //   let isValid = false;
-  //   while (!isValid) {
-  //     try {
-  //       const bonusNumber = await Console.readLineAsync(INPUT_MESSAGES.BONUS_NUMBER);
-  //       isValid = new BonusNumber(bonusNumber, this.winningNumbersToArray);
-  //       return bonusNumber;
-  //     } catch (e) {
-  //       Console.print(e.message);
-  //     }
-  //   }
-  // }
-
-  // async validate(ValidationClass, message) {
-  //   let isValid = false;
-  //   while (!isValid) {
-  //     const input = await Console.readLineAsync(message);
-  //     try {
-  //       isValid = new ValidationClass(input);
-  //       return input;
-  //     } catch (e) {
-  //       Console.print(e.message);
-  //     }
-  //   }
-  // }
+      try {
+        // isValid = new productDetailsValidation(input);
+        return parsedProductDetails;
+      } catch (e) {
+        Console.print(e.message);
+      }
+    }
+  }
 }
