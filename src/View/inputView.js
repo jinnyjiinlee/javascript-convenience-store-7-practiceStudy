@@ -2,6 +2,8 @@ import { Console } from '@woowacourse/mission-utils';
 // import { INPUT_MESSAGES } from '../Constant/messages.js';
 import { commaParser } from '../Utils/commaParser.js';
 
+import { ProductDetailsValidator } from '../Validation/productDetailsValidator.js';
+
 export class InputHandler {
   constructor() {}
   async getProductDetailsInput() {
@@ -13,8 +15,15 @@ export class InputHandler {
 
       const parsedProductDetails = commaParser(input);
 
+
       try {
-        // isValid = new productDetailsValidation(input);
+        // 여기에 일반재고 + 프로모션 재고 합한 것보다 구매 수량이 많을 때, 오류 나게 해야된다.
+        // 1개씩 넣어서 유효성 검사를 하자
+
+        parsedProductDetails.forEach((productDetail) => {
+          isValid = new ProductDetailsValidator(productDetail);
+        });
+
         return parsedProductDetails;
       } catch (e) {
         Console.print(e.message);

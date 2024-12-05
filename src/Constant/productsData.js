@@ -6,6 +6,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: 10,
     NORMAL_STOCK: 10,
     PROMOTION_TYPE: '탄산2+1',
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -14,6 +15,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: 8,
     NORMAL_STOCK: 7,
     PROMOTION_TYPE: '탄산2+1',
+    PURCHASE_COUNT: null,
   },
   {
     PRODUCT_NAME: '오렌지주스',
@@ -21,6 +23,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: 9,
     NORMAL_STOCK: null,
     PROMOTION_TYPE: 'MD추천상품',
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -29,6 +32,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: 5,
     NORMAL_STOCK: null,
     PROMOTION_TYPE: '탄산2+1',
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -37,6 +41,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: null,
     NORMAL_STOCK: 10,
     PROMOTION_TYPE: null,
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -45,6 +50,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: null,
     NORMAL_STOCK: 6,
     PROMOTION_TYPE: null,
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -53,6 +59,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: 5,
     NORMAL_STOCK: 5,
     PROMOTION_TYPE: '반짝할인',
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -61,6 +68,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: 5,
     NORMAL_STOCK: 5,
     PROMOTION_TYPE: 'MD추천상품',
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -69,6 +77,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: null,
     NORMAL_STOCK: 5,
     PROMOTION_TYPE: null,
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -77,6 +86,7 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: null,
     NORMAL_STOCK: 8,
     PROMOTION_TYPE: null,
+    PURCHASE_COUNT: null,
   },
 
   {
@@ -85,5 +95,6 @@ export const PRODUCT_DETAILS = [
     PROMOTION_STOCK: 1,
     NORMAL_STOCK: 10,
     PROMOTION_TYPE: 'MD추천상품',
+    PURCHASE_COUNT: null,
   },
 ];

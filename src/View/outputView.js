@@ -21,24 +21,27 @@ export class OutputHandler {
       const toObject = { ...splitProductDetails };
     });
 
-    for (let i = 1; i < Object.entries(this.PRODUCT_DETAILS).length + 1; i += 1) {
+    for (let productDetail of this.PRODUCT_DETAILS) {
       // 프로모션
 
-      if (this.PRODUCT_DETAILS[i].PROMOTION_STOCK !== null) {
+      if (productDetail.PROMOTION_STOCK !== null) {
         Console.print(
-          `- ${this.PRODUCT_DETAILS[i].PRODUCT_NAME} ${this.PRODUCT_DETAILS[i].PRICE.toLocaleString()}원 ${this.PRODUCT_DETAILS[i].PROMOTION_STOCK}개 ${this.PRODUCT_DETAILS[i].PROMOTION}`,
+          `- ${productDetail.PRODUCT_NAME} ${productDetail.PRICE.toLocaleString()}원 ${productDetail.PROMOTION_STOCK}개 ${productDetail.PROMOTION_TYPE}`,
         );
       }
 
-      if (this.PRODUCT_DETAILS[i].NORMAL_STOCK !== null) {
-        this.PRODUCT_DETAILS[i].NORMAL_STOCK = this.PRODUCT_DETAILS[i].NORMAL_STOCK + '개';
+      if (productDetail.NORMAL_STOCK !== null) {
+        Console.print(
+          `- ${productDetail.PRODUCT_NAME} ${productDetail.PRICE.toLocaleString()}원 ${productDetail.NORMAL_STOCK}개`,
+        );
       }
-      if (this.PRODUCT_DETAILS[i].NORMAL_STOCK === null) {
-        this.PRODUCT_DETAILS[i].NORMAL_STOCK = '재고 없음';
+      if (productDetail.NORMAL_STOCK === null) {
+        productDetail.NORMAL_STOCK = '재고 없음';
+        Console.print(
+          `- ${productDetail.PRODUCT_NAME} ${productDetail.PRICE.toLocaleString()}원 ${productDetail.NORMAL_STOCK}`,
+        );
       }
-      Console.print(
-        `- ${this.PRODUCT_DETAILS[i].PRODUCT_NAME} ${this.PRODUCT_DETAILS[i].PRICE.toLocaleString()}원 ${this.PRODUCT_DETAILS[i].NORMAL_STOCK}`,
-      );
+
     }
   }
 }
