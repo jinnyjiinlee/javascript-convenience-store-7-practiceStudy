@@ -5,7 +5,7 @@ export const PRODUCT_DETAILS = [
     PRICE: 1000,
     PROMOTION_STOCK: 10,
     NORMAL_STOCK: 10,
-    PROMOTION: '탄산2+1',
+    PROMOTION_TYPE: '탄산2+1',
   },
 
   {
@@ -13,14 +13,14 @@ export const PRODUCT_DETAILS = [
     PRICE: 1000,
     PROMOTION_STOCK: 8,
     NORMAL_STOCK: 7,
-    PROMOTION: '탄산2+1',
+    PROMOTION_TYPE: '탄산2+1',
   },
   {
     PRODUCT_NAME: '오렌지주스',
     PRICE: 1800,
     PROMOTION_STOCK: 9,
     NORMAL_STOCK: null,
-    PROMOTION: 'MD추천상품',
+    PROMOTION_TYPE: 'MD추천상품',
   },
 
   {
@@ -28,7 +28,7 @@ export const PRODUCT_DETAILS = [
     PRICE: 1200,
     PROMOTION_STOCK: 5,
     NORMAL_STOCK: null,
-    PROMOTION: '탄산2+1',
+    PROMOTION_TYPE: '탄산2+1',
   },
 
   {
@@ -36,7 +36,7 @@ export const PRODUCT_DETAILS = [
     PRICE: 500,
     PROMOTION_STOCK: null,
     NORMAL_STOCK: 10,
-    PROMOTION: null,
+    PROMOTION_TYPE: null,
   },
 
   {
@@ -44,7 +44,7 @@ export const PRODUCT_DETAILS = [
     PRICE: 1500,
     PROMOTION_STOCK: null,
     NORMAL_STOCK: 6,
-    PROMOTION: null,
+    PROMOTION_TYPE: null,
   },
 
   {
@@ -52,7 +52,7 @@ export const PRODUCT_DETAILS = [
     PRICE: 1500,
     PROMOTION_STOCK: 5,
     NORMAL_STOCK: 5,
-    PROMOTION: '반짝할인',
+    PROMOTION_TYPE: '반짝할인',
   },
 
   {
@@ -60,7 +60,7 @@ export const PRODUCT_DETAILS = [
     PRICE: 1200,
     PROMOTION_STOCK: 5,
     NORMAL_STOCK: 5,
-    PROMOTION: 'MD추천상품',
+    PROMOTION_TYPE: 'MD추천상품',
   },
 
   {
@@ -68,7 +68,7 @@ export const PRODUCT_DETAILS = [
     PRICE: 2000,
     PROMOTION_STOCK: null,
     NORMAL_STOCK: 5,
-    PROMOTION: null,
+    PROMOTION_TYPE: null,
   },
 
   {
@@ -76,7 +76,7 @@ export const PRODUCT_DETAILS = [
     PRICE: 6400,
     PROMOTION_STOCK: null,
     NORMAL_STOCK: 8,
-    PROMOTION: null,
+    PROMOTION_TYPE: null,
   },
 
   {
@@ -84,6 +84,6 @@ export const PRODUCT_DETAILS = [
     PRICE: 1700,
     PROMOTION_STOCK: 1,
     NORMAL_STOCK: 10,
-    PROMOTION: 'MD추천상품',
+    PROMOTION_TYPE: 'MD추천상품',
   },
 ];

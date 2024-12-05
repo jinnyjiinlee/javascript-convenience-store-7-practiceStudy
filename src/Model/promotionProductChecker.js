@@ -1,19 +1,16 @@
 import { PRODUCT_DETAILS } from '../Constant/productsData.js';
 
-export class PromotionProductChecker {
-  checkPromotionProduct(parsedProductDetail) {
-    this.parsedProductDetail = parsedProductDetail;
+export const checkPromotionProduct = (parsedProductDetail) => {
+  const productObject = PRODUCT_DETAILS.find(
+    (item) => item.PRODUCT_NAME === parsedProductDetail[0],
+  );
 
-    const productObject = PRODUCT_DETAILS.find(
-      (item) => item.PRODUCT_NAME === this.parsedProductDetail[0],
-    );
-    const productPromotion = productObject.PROMOTION;
+  const productPromotion = productObject.PROMOTION_TYPE;
 
-    if (productPromotion !== null) {
-      return true;
-    }
-    if (productPromotion === null) {
-      return false;
-    }
+  if (productPromotion !== null) {
+    return true;
   }
-}
+  if (productPromotion === null) {
+    return false;
+  }
+};

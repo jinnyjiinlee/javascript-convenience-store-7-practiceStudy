@@ -5,7 +5,8 @@ import { FreePromotionChecker } from '../Model/freePromotionChecker.js';
 import { FixedPricePaymentChecker } from '../Model/fixedPricePaymentChecker.js';
 import { PRODUCT_DETAILS } from '../Constant/productsData.js';
 
-import { PromotionProductChecker } from '../Model/promotionProductChecker.js';
+import { checkPromotionProduct } from '../Model/promotionProductChecker.js';
+import { checkPromotionType } from '../Model/promotionTypeChecker.js';
 
 export class MainController {
   // TODO: 리펙토링 -> ctrl + shift + R: 리펙토링 으로 하기
@@ -22,13 +23,20 @@ export class MainController {
 
     // 먼저 이게 프로모션 상품인지 아닌지 확인하기
     this.parsedProductDetails.forEach((parsedProductDetail) => {
-      if (new PromotionProductChecker().checkPromotionProduct(parsedProductDetail)) {
-        console.log('프로모션 o');
-        return true;
+      if (checkPromotionProduct(parsedProductDetail)) {
+        if (checkPromotionType(parsedProductDetail) === '2+1') {
+          // 2+1 상품 
+
+        }
+
+        if (checkPromotionType(parsedProductDetail) === '1+1') {
+          // 1+1 상품 
+
+        }
       }
 
-      if (!new PromotionProductChecker().checkPromotionProduct(parsedProductDetail)) {
-        console.log('프로모션 x');
+      if (checkPromotionProduct(parsedProductDetail) === false) {
+        console.log(parsedProductDetail, '프로모션 x');
         // 프로모션 아님
       }
     });
