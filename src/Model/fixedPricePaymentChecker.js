@@ -1,4 +1,4 @@
-import { PRODUCT_DETAILS } from '../Constant/constant.js';
+import { PRODUCT_DETAILS } from '../Constant/productsData.js';
 
 export class FixedPricePaymentChecker {
   constructor(parsedProductDetails) {

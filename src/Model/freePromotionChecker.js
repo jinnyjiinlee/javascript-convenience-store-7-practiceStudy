@@ -1,4 +1,4 @@
-import { PRODUCT_DETAILS } from '../Constant/constant.js';
+import { PRODUCT_DETAILS } from '../Constant/productsData.js';
 
 export class FreePromotionChecker {
   constructor(parsedProductDetails) {
@@ -10,6 +10,7 @@ export class FreePromotionChecker {
   }
 
   makePromotionProductArray() {
+    console.log('들어오나?');
     this.onePlusOneProductNames = [];
     this.twoPlusOneProductNames = [];
 
@@ -29,7 +30,6 @@ export class FreePromotionChecker {
 
   checkFreePromotion() {
     // 프로모션 적용 상품인지 확인한다.
-
     this.checkOnePlusOne();
     this.checkTwoPlusOne();
     this.checkNotPromotion();

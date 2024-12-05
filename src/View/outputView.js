@@ -1,5 +1,5 @@
 import { Console } from '@woowacourse/mission-utils';
-import { PRODUCT_DETAILS } from '../Constant/constant.js';
+import { PRODUCT_DETAILS } from '../Constant/productsData.js';
 import fs from 'fs';
 
 export class OutputHandler {
