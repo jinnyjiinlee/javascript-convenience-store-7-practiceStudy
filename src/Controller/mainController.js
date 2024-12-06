@@ -11,6 +11,7 @@ import { PRODUCT_DETAILS } from '../Constant/productsData.js';
 
 import { checkPromotionProduct } from '../Model/promotionProductChecker.js';
 import { checkPromotionType } from '../Model/promotionTypeChecker.js';
+import { fixedPricePaymentAmountCalculator } from '../Utils/fixedPricePaymentAmountCalculator.js';
 
 export class MainController {
   constructor() {
@@ -19,33 +20,39 @@ export class MainController {
     this.PRODUCT_DETAILS = Object.freeze(this.PRODUCT_DETAILS);
 
     this.giftedPromotionCount = null;
-    this.fixedPricePayment = null;
+    this.fixedPricePaymentCount = null;
 
     this.parsedProductDetail = null;
+
+    this.fixedPricePaymentAmount = null;
   }
 
   async startProgram() {
     this.output.printProductDetails();
     this.parsedProductDetails = await this.input.getProductDetailsInput();
     // const parsedProductDetails = ['[콜라-12], [콜라-9], [콜라-30], [콜라-15], [사이다-5], [사이다-20], [오렌지주스-3], [비타민워터-3], [정식도시락-1],
-    //   '];
 
     for (let parsedProductDetail of this.parsedProductDetails) {
       this.parsedProductDetail = parsedProductDetail;
+      this.purchaseCount = this.parsedProductDetail[1];
+
       // 먼저 프로모션 상품인지 확인
       if (checkPromotionProduct(parsedProductDetail)) {
-        const productObject = PRODUCT_DETAILS.find(
+        this.productObject = PRODUCT_DETAILS.find(
           (item) => item.PRODUCT_NAME === parsedProductDetail[0],
         );
 
-        const normalStock = productObject.NORMAL_STOCK; // 일반 재고
-        const promotionStock = productObject.PROMOTION_STOCK; // 프로모션 재고
-        const purchaseCount = Number(parsedProductDetail[1]); // 구매하려는 개수
+        const normalStock = this.productObject.NORMAL_STOCK; // 일반 재고
+        const promotionStock = this.productObject.PROMOTION_STOCK; // 프로모션 재고
 
+        this.purchaseCount = Number(parsedProductDetail[1]); // 구매하려는 개수
+
+        console.log('바로 앞에서 찍혀였을 떄 promotionStock: ', promotionStock);
         // 2+1 상품
-        this.handleTwoPlusOne(parsedProductDetail, purchaseCount, promotionStock, normalStock);
+        this.handleTwoPlusOne(parsedProductDetail, promotionStock, normalStock);
+
         // 1+1 상품
-        this.handleOnePlusOne(parsedProductDetail, purchaseCount, promotionStock, normalStock);
+        this.handleOnePlusOne(parsedProductDetail, promotionStock, normalStock);
       }
 
       if (checkPromotionProduct(parsedProductDetail) === false) {
@@ -53,43 +60,75 @@ export class MainController {
         // 프로모션 아님
       }
 
-      await this.checkGiftedPromotion();
-      await this.checkFixedPrice();
+      this.purchaseCount = await this.input.getGiftedPromotionPaymentInput(
+        this.giftedPromotionCount,
+        this.parsedProductDetail,
+        this.purchaseCount,
+      );
+
+      this.purchaseCount = await this.input.getFixedPricePaymentInput(
+        this.fixedPricePaymentCount,
+        this.parsedProductDetail,
+        this.purchaseCount,
+      );
+
+      //정가 계산
+      new fixedPricePaymentAmountCalculator().calculateFixedPricePaymentAmount(
+        this.purchaseCount,
+        this.fixedPricePaymentAmount,
+      );
+      // 여기에 할당하기
+      //총 구매개수: 사용자의 입력 + 정가구매 Y일때
+
+      this.productObject.PURCHASE_COUNT = this.purchaseCount;
+
+      //여기서 정가 구매
+      this.fixedPricePaymentCount = this.fixedPricePaymentCount;
+
+      // 프로모션
+      this.promotionPaymentCount = this.purchaseCount - this.fixedPricePaymentCount;
+
+      console.log(this.productObject);
     }
   }
 
-  handleOnePlusOne(parsedProductDetail, purchaseCount, promotionStock, normalStock) {
+  // TODO: refactor 밑에 핸들러는 나중에 분리
+  handleOnePlusOne(parsedProductDetail, promotionStock, normalStock) {
+    console.log('1+1 함수 들어왔을 때promotionStock: ', promotionStock);
     if (checkPromotionType(parsedProductDetail) === '1+1') {
       // 구매개수 < 프로모션 재고
-      if (purchaseCount < promotionStock) {
-        if (purchaseCount % 2 === 1) {
+
+      if (this.purchaseCount < promotionStock) {
+        console.log('들어옴??? ');
+        if (this.purchaseCount % 2 === 1) {
           console.log('프로모션 1개 증정');
           this.giftedPromotionCount = 1;
         }
-        if (purchaseCount % 2 === 0) {
+        if (this.purchaseCount % 2 === 0) {
           console.log('프로모션 x, 정가 구매 x');
         }
       }
 
       // 구매개수 > 프로모션 재고
-      if (purchaseCount > promotionStock) {
+      if (this.purchaseCount > promotionStock) {
         // 구매 개수 - 프로모션 재고 > 일반 재고
-        if (purchaseCount - promotionStock > normalStock) {
+        if (this.purchaseCount - promotionStock > normalStock) {
           console.log('재고 없음으로  처리 ');
         }
         // 구매 개수 - 프로모션 재고 =< 일반 재고
-        if (purchaseCount - promotionStock <= normalStock) {
-          console.log((promotionStock % 2) + (purchaseCount - promotionStock), '정가 구매');
-          this.fixedPricePayment = (promotionStock % 2) + (purchaseCount - promotionStock);
+        if (this.purchaseCount - promotionStock <= normalStock) {
+          console.log((promotionStock % 2) + (this.purchaseCount - promotionStock), '정가 구매');
+          this.fixedPricePaymentCount =
+            (promotionStock % 2) + (this.purchaseCount - promotionStock);
         }
       }
 
       // 구매개수 = 프로모션 재고
-      if (purchaseCount === promotionStock) {
+      if (this.purchaseCount === promotionStock) {
         // 프로모션 재고 홀수 일때
         if (promotionStock % 2 === 1) {
           console.log(1, '개 정가구매(홀수)');
-          this.fixedPricePayment = 1;
+          this.fixedPricePaymentCount = 1;
         }
         // 프로모션 재고 짝수  일때
         if (promotionStock % 2 === 0) {
@@ -99,111 +138,54 @@ export class MainController {
     }
   }
 
-  handleTwoPlusOne(parsedProductDetail, purchaseCount, promotionStock, normalStock) {
+  handleTwoPlusOne(parsedProductDetail, promotionStock, normalStock) {
+    console.log('2+1 함수 들어왔을 때promotionStock: ', promotionStock);
+
     if (checkPromotionType(parsedProductDetail) === '2+1') {
       // 구매 개수 =< 프로모션 재고
-      if (purchaseCount <= promotionStock) {
+      if (this.purchaseCount <= promotionStock) {
         // 구매개수 % 3 = 2
-        if (purchaseCount % 3 === 2) {
+        if (this.purchaseCount % 3 === 2) {
           // 프로모션 1개 증정
           console.log('프로모션 증정 1개 증정');
           this.giftedPromotionCount = 1;
         }
-        if (purchaseCount % 3 === 0) {
+        if (this.purchaseCount % 3 === 0) {
           // 프로모션 증정 X, 정가구매 X
           console.log('프로모션 증정 X, 정가구매 X');
           this.giftedPromotionCount = 0;
-          this.fixedPricePayment = 0;
+          this.fixedPricePaymentCount = 0;
         }
-        if (purchaseCount % 3 === 1) {
+        if (this.purchaseCount % 3 === 1) {
           // 정가 구매 1개
           console.log('정가구매 1개 ');
-          this.fixedPricePayment = 1;
+          this.fixedPricePaymentCount = 1;
         }
       }
       // 구매 개수 > 프로모션 재고再考
-      if (purchaseCount > promotionStock) {
-        if (purchaseCount - promotionStock > normalStock) {
+      if (this.purchaseCount > promotionStock) {
+        if (this.purchaseCount - promotionStock > normalStock) {
           // 재고 없음으로 에러 처리
           console.log('재고 없음올 에러 처리 ');
         }
-        if (purchaseCount - promotionStock <= normalStock) {
+        if (this.purchaseCount - promotionStock <= normalStock) {
           // (프로모션 재고 % 3)+ (구매 개수 - 프로모션 재고) 만큼 정가 구매
-          const purchase = (promotionStock % 3) + (purchaseCount - promotionStock);
+          const purchase = (promotionStock % 3) + (this.purchaseCount - promotionStock);
           console.log(purchase, '정가구매 ');
-          this.fixedPricePayment = purchase;
+          this.fixedPricePaymentCount = purchase;
         }
       }
     }
   }
-
-  async checkGiftedPromotion() {
-    if (this.giftedPromotionCount) {
-      const answer = await Console.readLineAsync(
-        `현재 ${this.parsedProductDetail[0]}은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)`,
-      );
-
-      if (answer === 'Y') {
-        console.log('Y로 누름');
-      }
-      if (answer === 'N') {
-        console.log('N로 누름');
-      }
-
-      if (!(answer === 'Y' || answer === 'N')) {
-        await this.checkGiftedPromotion();
-      }
-    }
-  }
-
-  async checkFixedPrice() {
-    if (this.fixedPricePayment) {
-      const answer = await Console.readLineAsync(
-        `현재 ${this.parsedProductDetail[0]} ${this.fixedPricePayment}개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)`,
-      );
-
-      if (answer === 'Y') {
-        console.log('Y로 누름');
-      }
-      if (answer === 'N') {
-        console.log('N로 누름');
-      }
-
-      if (!(answer === 'Y' || answer === 'N')) {
-        await this.checkFixedPrice();
-      }
-    }
-  }
-
-  // 구매 수량 객체에 push를 해야되는데,
-  // 프로모션일 때
-  //      2+1인 경우, ->
-
-  //                규칙이 있넹
-  //                구매수량이 3의 배수면? -> 정가구매: (구매수량 / 3) * 2
-  //                구매 수량이 3의 배수에서 -1이면 -> 정가구매: (구매수량 / 3) * 2
-  //                구매수량이 3의 배수에서 -2 이면 -> 정가구매: ((구매수량 / 3) * 2) -1
-
-  //                만약에 1개를 구매했다? 정가구매 1 / 프로모션 0
-  //                만약에 2개를 구매했다? 정가구매 2 / 프로모션 0
-  //                만약에 3개를 구매했다? 정가구매 2 / 프로모션 1
-
-  //                만약에 4개를 구매했다? 정가구매 3 / 프로모션 1
-  //                만약에 5개를 구매했다? 정가구매 4 / 프로모션 1
-  //                만약에 6개를 구매했다? 정가구매 4 / 프로모션 2
-
-  //                만약에 7개를 구매했다? 정가구매 5 / 프로모션 2
-  //                만약에 8개를 구매했다? 정가구매 6 / 프로모션 2
-  //                만약에 9개를 구매했다? 정가구매 6 / 프로모션 3
-
-  //                만약에 10개를 구매했다? 정가구매 7 / 프로모션 3
-  //                만약에 11개를 구매했다? 정가구매 8 / 프로모션 3
-  //                만약에 12개를 구매했다? 정가구매 8 / 프로모션 4
-
-  //                만약에 13개를 구매했다? 정가구매 9 / 프로모션 4
-  //                만약에 14개를 구매했다? 정가구매 10 / 프로모션 4
-  //                만약에 15개를 구매했다? 정가구매: 10 / 프로모션 5
-
-  //      1+1인 경우, ->
-  // 일반 상품일 떄 -> 편함 그냥 입력한거 그대로
 }
+
+// 구매 수량 객체에 push를 해야되는데,
+// 프로모션일 때
+//      2+1인 경우, ->
+//                구매수량 % 3 === 1 이면 -> 정가구매: (((구매수량/3)+1) * 2)   -1         / 프로모션: 구매수량 - 정가구매
+//                구매수량 % 3 === 2 이면 -> 정가구매: ((구매수량/3)+1) * 2     / 프로모션: 구매수량 - 정가구매
+//                구매수량 % 3 === 0 이면 -> 정가구매: (구매수량/3) * 2         / 프로모션: 구매수량 - 정가구매
+
+//      1+1인 경우, ->
+//                구매수량 % 2 === 1 이면 -> 정가구매: 구매수량/2 +1 / 프로모션: 구매수량-정가구매
+//                구매수량 % 2 === 0 이면 -> 정가구매: 구매수량 / 2  / 프로모션: 구매수량-정가구매
