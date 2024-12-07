@@ -7,26 +7,21 @@ import { ProductDetailsValidator } from '../Validation/productDetailsValidator.j
 export class InputHandler {
   constructor() {}
   async getProductDetailsInput() {
-    let isValid = false;
-    while (!isValid) {
-      const input = await Console.readLineAsync(
-        '\n구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])\n',
-      );
+    const input = await Console.readLineAsync(
+      '\n구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])\n',
+    );
+    const parsedProductDetails = commaParser(input);
 
-      const parsedProductDetails = commaParser(input);
-
-      try {
-        // 여기에 일반재고 + 프로모션 재고 합한 것보다 구매 수량이 많을 때, 오류 나게 해야된다.
-        // 1개씩 넣어서 유효성 검사를 하자
-
-        parsedProductDetails.forEach((productDetail) => {
-          isValid = new ProductDetailsValidator(productDetail);
-        });
-
-        return parsedProductDetails;
-      } catch (e) {
-        Console.print(e.message);
+    try {
+      for (let productDetail of parsedProductDetails) {
+        new ProductDetailsValidator(productDetail);
       }
+
+      return parsedProductDetails;
+    } catch (e) {
+      Console.print(e.message);
+      await this.getProductDetailsInput();
+      return parsedProductDetails;
     }
   }
 
@@ -37,16 +32,18 @@ export class InputHandler {
       );
 
       if (answer === 'Y') {
-        console.log('Y로 누름');
         purchaseCount += 1;
       }
       if (answer === 'N') {
-        console.log('N로 누름');
         // 구매개수 그대로
       }
 
       if (!(answer === 'Y' || answer === 'N')) {
-        await this.getGiftedPromotionPaymentInput();
+        await this.getGiftedPromotionPaymentInput(
+          giftedPromotionCount,
+          parsedProductDetail,
+          purchaseCount,
+        );
       }
     }
 
@@ -60,7 +57,6 @@ export class InputHandler {
       );
 
       if (answer === 'Y') {
-        console.log('Y로 누름');
         // 구매개수 그대로
       }
       if (answer === 'N') {
@@ -68,9 +64,21 @@ export class InputHandler {
       }
 
       if (!(answer === 'Y' || answer === 'N')) {
-        await this.getFixedPricePaymentInput();
+        await this.getFixedPricePaymentInput(fixedPricePayment, parsedProductDetail, purchaseCount);
       }
     }
     return purchaseCount;
+  }
+
+  async getMembershipDiscountInput() {
+    const answer = await Console.readLineAsync(`멤버십 할인을 받으시겠습니까? (Y/N)`);
+    if (answer === 'Y') {
+      return 'Y';
+    }
+    if (answer === 'N') {
+      return 'N';
+    }
+
+    return await this.getMembershipDiscountInput();
   }
 }
