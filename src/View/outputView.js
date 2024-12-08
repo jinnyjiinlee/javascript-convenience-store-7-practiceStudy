@@ -23,7 +23,7 @@ export class OutputHandler {
     });
 
     for (let productDetail of this.PRODUCT_DETAILS) {
-      // 프로모션
+      // 프로모션 날짜에 대한걸 해야 된다 
 
       if (productDetail.PROMOTION_STOCK !== null) {
         Console.print(

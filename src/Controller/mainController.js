@@ -4,7 +4,7 @@ import { OutputHandler } from '../View/outputView.js';
 
 import { PRODUCT_DETAILS } from '../Constant/productsData.js';
 
-import { checkPromotionProduct } from '../Model/promotionProductChecker.js';
+import { PromotionProductChecker } from '../Model/promotionProductChecker.js';
 import { checkPromotionType } from '../Model/promotionTypeChecker.js';
 import { fixedPricePaymentAmountCalculator } from '../Utils/fixedPricePaymentAmountCalculator.js';
 
@@ -47,7 +47,13 @@ export class MainController {
       this.promotionStock = this.productObject.PROMOTION_STOCK; // 프로모션 재고
       this.purchaseCount = Number(parsedProductDetail[1]); // 구매하려는 개수
 
-      if (checkPromotionProduct(parsedProductDetail)) {
+      const promotionProductChecker = new PromotionProductChecker().checkPromotionProduct(
+        this.parsedProductDetail,
+      );
+
+      console.log('promotionProductChecker: ', promotionProductChecker);
+
+      if (promotionProductChecker) {
         // 2+1 상품
         this.handleTwoPlusOne();
 
@@ -74,7 +80,7 @@ export class MainController {
           );
       }
 
-      if (checkPromotionProduct(parsedProductDetail) === false) {
+      if (!promotionProductChecker) {
         this.fixedPricePaymentCount = this.purchaseCount;
         // 프로모션 아님
       }
